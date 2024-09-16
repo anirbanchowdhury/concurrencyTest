@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -109,19 +110,19 @@ public class ConcurrencySuite {
         Thread.sleep(5000);//wait for 5ms
         //  Use Awaitility to wait up to 5 seconds before checking the /api/positions response
 
-            String positionsApiUrl = "http://localhost:8085/api/positions";
+        String positionsApiUrl = "http://localhost:8085/api/positions";
 
 
-            // Deserialize the JSON array into a List of ExpectedPosition objects
-            String jsonResponse = restTemplate.getForObject(positionsApiUrl, String.class);
+        // Deserialize the JSON array into a List of ExpectedPosition objects
+        String jsonResponse = restTemplate.getForObject(positionsApiUrl, String.class);
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        List<ExpectedPosition> expectedPositions = mapper.readValue(jsonResponse, new TypeReference<List<ExpectedPosition>>() {});
+        List<ExpectedPosition> expectedPositions = mapper.readValue(jsonResponse, new TypeReference<List<ExpectedPosition>>() {
+        });
 
-            assertNotNull(expectedPositions,"Expected positions ");
-
+        assertNotNull(expectedPositions, "Expected positions ");
 
 
     }
