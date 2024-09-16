@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface ExpectedTransactionsRepository extends JpaRepository<ExpectedTransaction, Long> {
 
-    Optional<ExpectedTransaction> findByAccountIdAndProductId(Integer accountId, Integer productId);
-
     Optional<ExpectedTransaction> findByAggregationStatus(AggregationStatus aggregationStatus);
 
     List<ExpectedTransaction> findTop10ByAggregationStatusNotOrderByTradeDtAsc(AggregationStatus aggregationStatus);

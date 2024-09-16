@@ -11,12 +11,15 @@ public class ExpectedTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer accountId;
-    private Integer productId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_id", nullable = false)  // Add relationship with Account
+    private Account account;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id", nullable = false)  // Add relationship with Product
+    private Product product;
     private Date tradeDt;
     private String direction;
     private Integer quantity;
-
 
     @Enumerated(EnumType.ORDINAL)
     private AggregationStatus aggregationStatus;
@@ -38,20 +41,20 @@ public class ExpectedTransaction {
         this.id = id;
     }
 
-    public Integer getAccountId() {
-        return accountId;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccountId(Integer accountId) {
-        this.accountId = accountId;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
-    public Integer getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Date getTradeDt() {
@@ -118,18 +121,19 @@ public class ExpectedTransaction {
         this.filledQuantity = filledQuantity;
     }
 
+
     @Override
     public String toString() {
-        return "Transaction{" +
+        return "ExpectedTransaction{" +
                 "id=" + id +
-                ", accountId=" + accountId +
-                ", productId=" + productId +
+                ", account=" + account +
+                ", product=" + product +
                 ", tradeDt=" + tradeDt +
                 ", direction='" + direction + '\'' +
                 ", quantity=" + quantity +
-
                 ", aggregationStatus=" + aggregationStatus +
                 ", status=" + status +
+                ", filledQuantity=" + filledQuantity +
                 ", fromDt=" + fromDt +
                 ", toDt=" + toDt +
                 '}';
