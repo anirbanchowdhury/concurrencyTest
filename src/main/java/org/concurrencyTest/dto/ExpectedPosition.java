@@ -14,7 +14,7 @@ public class ExpectedPosition {
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private String bd;
-    private Integer quantity;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime fromDt;
@@ -54,16 +54,37 @@ public class ExpectedPosition {
         this.bd = bd;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+    private Integer pmDecisionSignedOffQuantity = 0;
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+    private Integer pendingExecutionQuantity = 0;
+    private Integer executedQuantity = 0;
 
     public LocalDateTime getFromDt() {
         return fromDt;
+    }
+
+    public Integer getPmDecisionSignedOffQuantity() {
+        return pmDecisionSignedOffQuantity;
+    }
+
+    public void setPmDecisionSignedOffQuantity(Integer pmDecisionSignedOffQuantity) {
+        this.pmDecisionSignedOffQuantity = pmDecisionSignedOffQuantity;
+    }
+
+    public Integer getPendingExecutionQuantity() {
+        return pendingExecutionQuantity;
+    }
+
+    public void setPendingExecutionQuantity(Integer pendingExecutionQuantity) {
+        this.pendingExecutionQuantity = pendingExecutionQuantity;
+    }
+
+    public Integer getExecutedQuantity() {
+        return executedQuantity;
+    }
+
+    public void setExecutedQuantity(Integer executedQuantity) {
+        this.executedQuantity = executedQuantity;
     }
 
     public void setFromDt(LocalDateTime fromDt) {
@@ -76,5 +97,20 @@ public class ExpectedPosition {
 
     public void setToDt(LocalDateTime toDt) {
         this.toDt = toDt;
+    }
+
+    @Override
+    public String toString() {
+        return "ExpectedPosition{" +
+                "id=" + id +
+                ", account=" + account +
+                ", product=" + product +
+                ", bd='" + bd + '\'' +
+                ", fromDt=" + fromDt +
+                ", toDt=" + toDt +
+                ", pmDecisionSignedOffQuantity=" + pmDecisionSignedOffQuantity +
+                ", pendingExecutionQuantity=" + pendingExecutionQuantity +
+                ", executedQuantity=" + executedQuantity +
+                '}';
     }
 }
