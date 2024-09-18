@@ -11,12 +11,14 @@ public class ExpectedTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String orderId;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id", nullable = false)  // Add relationship with Account
     private Account account;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)  // Add relationship with Product
     private Product product;
+    @Temporal(TemporalType.DATE)
     private Date tradeDt;
     private String direction;
     private Integer quantity;
@@ -24,10 +26,9 @@ public class ExpectedTransaction {
     @Enumerated(EnumType.ORDINAL)
     private AggregationStatus aggregationStatus;
 
-    @Enumerated(EnumType.ORDINAL)
-    private Status status;
+    private boolean pending = true;
 
-    private Integer filledQuantity;
+    private Integer filledQuantity = 0;
 
     private LocalDateTime fromDt;
     private LocalDateTime toDt;
@@ -89,13 +90,6 @@ public class ExpectedTransaction {
         this.aggregationStatus = aggregationStatus;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
     public LocalDateTime getFromDt() {
         return fromDt;
@@ -121,18 +115,34 @@ public class ExpectedTransaction {
         this.filledQuantity = filledQuantity;
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
 
     @Override
     public String toString() {
         return "ExpectedTransaction{" +
                 "id=" + id +
+                ", orderId='" + orderId + '\'' +
                 ", account=" + account +
                 ", product=" + product +
                 ", tradeDt=" + tradeDt +
                 ", direction='" + direction + '\'' +
                 ", quantity=" + quantity +
                 ", aggregationStatus=" + aggregationStatus +
-                ", status=" + status +
+                ", pending=" + pending +
                 ", filledQuantity=" + filledQuantity +
                 ", fromDt=" + fromDt +
                 ", toDt=" + toDt +

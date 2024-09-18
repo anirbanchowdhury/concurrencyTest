@@ -1,8 +1,10 @@
 package org.concurrencyTest.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.concurrencyTest.entity.Account;
 import org.concurrencyTest.entity.Product;
+
 
 import java.time.LocalDateTime;
 
@@ -16,7 +18,7 @@ public class ExpectedPosition {
     private String bd;
 
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+
     private LocalDateTime fromDt;
     private LocalDateTime toDt;
 

@@ -13,5 +13,7 @@ public interface ExpectedTransactionsRepository extends JpaRepository<ExpectedTr
     Optional<ExpectedTransaction> findByAggregationStatus(AggregationStatus aggregationStatus);
 
     List<ExpectedTransaction> findTop10ByAggregationStatusNotOrderByTradeDtAsc(AggregationStatus aggregationStatus);
+
+    List<ExpectedTransaction> findByOrderIdIn(List<String> orderIds);
 }
 

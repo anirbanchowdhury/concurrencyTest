@@ -38,4 +38,11 @@ public class Account {
                 ", accountName='" + accountName + '\'' +
                 '}';
     }
+
+    public Account(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public Account() {
+    }
 }
