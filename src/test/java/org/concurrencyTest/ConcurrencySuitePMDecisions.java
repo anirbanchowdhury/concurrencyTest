@@ -1,13 +1,9 @@
 package org.concurrencyTest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.awaitility.Awaitility;
 import org.concurrencyTest.dto.ExpectedPosition;
 import org.concurrencyTest.entity.*;
 import org.concurrencyTest.repository.AccountRepository;
@@ -20,12 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -41,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest
-public class ConcurrencySuite {
+public class ConcurrencySuitePMDecisions {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -54,12 +48,12 @@ public class ConcurrencySuite {
 
     private final RestTemplate restTemplate;
 
-    private static final Logger logger = LoggerFactory.getLogger(ConcurrencySuite.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConcurrencySuitePMDecisions.class);
 
     private  final String PM_SYSTEM = "CONC-TEST-PM1-";
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     @Autowired
-    public ConcurrencySuite(RestTemplateBuilder restTemplateBuilder) {
+    public ConcurrencySuitePMDecisions(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
