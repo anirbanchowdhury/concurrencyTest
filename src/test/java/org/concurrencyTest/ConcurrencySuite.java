@@ -23,6 +23,7 @@ import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -55,13 +56,24 @@ public class ConcurrencySuite {
 
     private static final Logger logger = LoggerFactory.getLogger(ConcurrencySuite.class);
 
-    final String PM_SYSTEM = "CONC-TEST-PM1-";
+    private  final String PM_SYSTEM = "CONC-TEST-PM1-";
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     @Autowired
     public ConcurrencySuite(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
     @Test
+    public void testPMSubmissionSuite() throws Exception{
+        final int NO_OF_PM_SUBMISSIONS = 1;
+        final int SECONDS_TO_SLEEP = 5;
+        for (int i=0;i <NO_OF_PM_SUBMISSIONS;i++){
+            testPMSubmissionRandom();
+            TimeUnit.SECONDS.sleep(SECONDS_TO_SLEEP);
+            logger.info("Submission # {}", i);
+        }
+    }
+
     public void testPMSubmissionRandom() throws Exception {
         //  Pick random Account and Product from the database
         List<ExpectedTransaction> expectedTransactions = getRandomExpectedTransactions();
@@ -87,14 +99,14 @@ public class ConcurrencySuite {
 
         logger.info("positions returned, count = {},  {}",expectedPositions.size(), expectedPositions);
         assertNotNull(expectedPositions, "Expected positions ");
-        compareExpectedTransactionsToPositionsReturned(expectedTransactions,expectedPositions);
+        List<ExpectedTransaction> expectedTransactionsFromDB = expectedTransactionRepository.findByPending(true); //Only finding the PendingExecution = true, so just the signed off tx.
+        compareExpectedTransactionsToPositionsReturned(expectedTransactionsFromDB,expectedPositions);
     }
 
 
-    private void compareExpectedTransactionsToPositionsReturned(List<ExpectedTransaction> expectedTransactions, List<ExpectedPosition>expectedPositions){
+    private void compareExpectedTransactionsToPositionsReturned(List<ExpectedTransaction> expectedTransactions, List<ExpectedPosition> expectedPositions) {
         // Group ExpectedTransaction by trade_dt, account_id, product_id
         Map<String, Integer> groupedTransactions = expectedTransactions.stream()
-                .filter(transaction -> transaction.isPending()) // TODO : Only consider PENDING transactions for now
                 .collect(Collectors.groupingBy(
                         transaction -> transaction.getTradeDt().toString() + "-" +
                                 transaction.getAccount().getAccountName() + "-" +
@@ -104,12 +116,13 @@ public class ConcurrencySuite {
                         )
                 ));
         logger.info("grouped transactions = {}", groupedTransactions);
+
         // Compare grouped results with ExpectedPosition
         for (ExpectedPosition position : expectedPositions) {
             String key = position.getBd().toString() + "-" +
                     position.getAccount().getAccountName() + "-" +
                     position.getProduct().getProductName();
-
+            logger.info(" grouped position key = {}, position = {}", key, position);
             if (groupedTransactions.containsKey(key)) {
                 int expectedSignedOffQuantity = groupedTransactions.get(key);
 
@@ -117,10 +130,24 @@ public class ConcurrencySuite {
                 assertEquals(expectedSignedOffQuantity, position.getPmDecisionSignedOffQuantity(),
                         "Mismatch in pmDecisionSignedOffQuantity for account " + position.getAccount().getAccountName() +
                                 " and product " + position.getProduct().getProductName());
+
+                // Remove the matched transaction from the map
+                groupedTransactions.remove(key);
+            } else {
+                assert false : "Couldn't find a transaction for the said position - impossible";
             }
         }
 
+        // Check for any transactions that were not matched to a position
+        if (!groupedTransactions.isEmpty()) {
+            StringBuilder unmatchedTransactions = new StringBuilder("Unmatched transactions found which didnt have an equivalent position: ");
+            groupedTransactions.forEach((key, quantity) -> {
+                unmatchedTransactions.append(String.format("Key: %s, Quantity: %d; ", key, quantity));
+            });
+            assert false : unmatchedTransactions.toString();
+        }
     }
+
 
     private static ObjectMapper getObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -178,7 +205,7 @@ public class ConcurrencySuite {
                         "\"orderId\":\"" + expectedTransaction.getOrderId() + "\", " +
                         "\"account\": { \"accountName\": \"" + expectedTransaction.getAccount().getAccountName() + "\" }, " +
                         "\"product\": { \"productName\": \"" + expectedTransaction.getProduct().getProductName() + "\" }, " +
-                        "\"tradeDt\": \"" + "2024-09-16" + "\", " + //TODO change to date
+                        "\"tradeDt\": \"" + formatter.format(expectedTransaction.getTradeDt()) + "\", " +
                         "\"direction\": \"" + expectedTransaction.getDirection() + "\", " +
                         "\"quantity\": " + expectedTransaction.getQuantity() + ", " +
                         "\"source\": \"" + "PLANNING" + "\", " +

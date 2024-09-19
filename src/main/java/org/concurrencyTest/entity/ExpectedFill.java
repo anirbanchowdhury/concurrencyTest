@@ -22,7 +22,6 @@ public class ExpectedFill {
     private LocalDate thruDt;
 
     // getters and setters
-
     public Long getFillId() {
         return fillId;
     }
