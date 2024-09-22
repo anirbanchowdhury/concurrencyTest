@@ -1,26 +1,20 @@
 package org.concurrencyTest.dto;
 
 public class PMResponseMessage {
-    private String sourceId;
-    private Long orderId;
-    private String status;
+    private String sourceOrderId;
+    private String status; // PENDING_EXECUTION / EXECUTION  TODO - convert to one enum
 
-    // Getters and setters
-    public String getSourceId() {
-        return sourceId;
+    private int executedQuantity; // total executedQty so far
+
+    public String getSourceOrderId() {
+        return sourceOrderId;
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
+    public void setSourceOrderId(String sourceOrderId) {
+        this.sourceOrderId = sourceOrderId;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
 
     public String getStatus() {
         return status;
@@ -28,5 +22,13 @@ public class PMResponseMessage {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getExecutedQuantity() {
+        return executedQuantity;
+    }
+
+    public void setExecutedQuantity(int executedQuantity) {
+        this.executedQuantity = executedQuantity;
     }
 }
